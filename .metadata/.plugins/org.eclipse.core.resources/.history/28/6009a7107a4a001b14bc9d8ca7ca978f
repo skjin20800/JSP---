@@ -1,0 +1,77 @@
+package com.cos.reflect.filter;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Enumeration;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.cos.reflect.controller.UserController;
+
+import anno.RequestMapping;
+
+// 분기 시키기
+public class Dispatcher implements Filter{
+
+	@Override
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+			throws IOException, ServletException {
+		
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) resp;
+
+		// /user 파싱하기
+		String endPoint = request.getRequestURI().replaceAll(request.getContextPath(),"");
+		System.out.println("엔드포인트 : " + endPoint);
+		
+		UserController userController = new UserController();
+		Method[] methods = userController.getClass().getDeclaredMethods(); // 
+		
+		for (Method method : methods) { // 4바퀴 (join, login, user, hello)
+			Annotation annotation = method.getDeclaredAnnotation(RequestMapping.class);// 필터를 다시 안탐
+			RequestMapping requestMapping = (RequestMapping) annotation; //어노테이션 자체를탐
+			System.out.println("requestMapping : "+requestMapping.value());//  어노테이션 값 출력
+			
+			if(requestMapping.value().equals(endPoint)) {
+				
+				try {
+					Parameter[] params = method.getParameters();
+					String path = null;
+					if(params.length != 0) {
+						Object dtoInstance = params[0].getType().newInstance(); // /user/login => LoginDto, /user/join => JoinDto
+
+						Enumeration<String> keys =   request.getParameterNames(); // username, password
+						// keys 값을 변형 username => setUsername
+						// keys 값을 변형 password => setPassword
+						while(keys.hasMoreElements()) {
+							System.out.println(keys.nextElement());
+						}
+						path = "/";
+					}else {
+						path = (String)method.invoke(userController);
+					}
+
+					RequestDispatcher dis = request.getRequestDispatcher(path); // 필터를 다시 안탐!!
+					
+					
+					
+					
+					dis.forward(request, response);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+		}
+	}	
+	
+}

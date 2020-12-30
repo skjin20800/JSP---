@@ -1,0 +1,39 @@
+package com.cos.reflect.filter;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.catalina.startup.UserConfig;
+
+import com.cos.reflect.controller.UserController;
+
+import anno.RequestMapping;
+
+// 분기 시키기
+public class Dispatcher1 implements Filter{
+
+	@Override
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+			throws IOException, ServletException {
+		
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) resp;
+		
+		System.out.println("컨텍스트패스 : " + request.getContextPath()); // 프로젝트 시작주소
+		System.out.println("식별자주소 : " + request.getRequestURI()); // 끝주소
+		System.out.println("전체주소 : " + request.getRequestURL()); // 전체주소
+			
+
+	}	
+	
+}
