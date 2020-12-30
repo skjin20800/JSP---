@@ -50,7 +50,7 @@ public class Dispatcher implements Filter {
 					if (params.length != 0) {
 						// 해당 dtoInstance를 리플렉션해서 set함수 호출(username, password)
 						Object dtoInstance = params[0].getType().newInstance();
-						setData(dtoInstance, request);
+						setData(dtoInstance, request); // request에서 적용할 setter값을 전부 dtoInstance에 넣어 DTO로 전달한다.
 						path = (String) method.invoke(userController, dtoInstance);
 					} else {
 						path = (String) method.invoke(userController);
@@ -75,22 +75,22 @@ public class Dispatcher implements Filter {
 		}
 	}
 
-	private <T> void setData(T instance, HttpServletRequest request) {
+	private <T> void setData(T dtoInstance, HttpServletRequest request) {
 		Enumeration<String> keys = request.getParameterNames(); // 크기 : 2 (username, password)
 		while (keys.hasMoreElements()) { // 2번 돈다 //다음번 주소가 있는지 체크.
 			String key = (String) keys.nextElement(); //keys의 값을 key에담고 다음 keys값을 앞으로 땡겨놓는다
 			String methodKey = keyToMethodKey(key); // setUsername
 
-			Method[] methods = instance.getClass().getDeclaredMethods(); // 5개
+			Method[] methods = dtoInstance.getClass().getDeclaredMethods(); // 5개
 
 			for (Method method : methods) {
 				if (method.getName().equals(methodKey)) {
 					try {
-						method.invoke(instance, request.getParameter(key)); // String
+						method.invoke(dtoInstance, request.getParameter(key)); // String
 					} catch (Exception e) {
 						try {
 							int value = Integer.parseInt(request.getParameter(key));
-							method.invoke(instance, value);
+							method.invoke(dtoInstance, value);
 						} catch (Exception e2) {
 							e2.printStackTrace();
 						}

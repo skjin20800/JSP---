@@ -7,4 +7,5 @@
     <fullyQualifiedTypeName name="java.util.Enumeration"/>
     <fullyQualifiedTypeName name="com.cos.reflect.controller.dto.JoinDto"/>
     <fullyQualifiedTypeName name="anno.RequestMapping"/>
+    <fullyQualifiedTypeName name="javax.servlet.Filter"/>
 </qualifiedTypeNameHistroy>
