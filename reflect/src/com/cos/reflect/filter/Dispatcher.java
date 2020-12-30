@@ -45,7 +45,7 @@ public class Dispatcher implements Filter {
 			if (requestMapping.value().equals(endPoint)) {
 				isMatching = true;
 				try {
-					Parameter[] params = method.getParameters(); // login(LoginDto dto)
+					Parameter[] params = method.getParameters(); // LoginDto
 					String path = null;
 					if (params.length != 0) {
 						// 해당 dtoInstance를 리플렉션해서 set함수 호출(username, password)
