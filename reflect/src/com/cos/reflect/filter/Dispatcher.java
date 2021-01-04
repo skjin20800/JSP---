@@ -71,7 +71,6 @@ public class Dispatcher implements Filter {
 			PrintWriter out = response.getWriter();
 			out.println("잘못된 주소 요청입니다. 404 에러");
 			out.flush();
-
 		}
 	}
 
